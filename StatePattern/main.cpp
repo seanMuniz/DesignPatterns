@@ -23,10 +23,10 @@ class TrafficLight {
 
         unique_ptr<State> currentState; 
     public:
-        TrafficLight(unique_ptr<State> state) : currentState(move(state)){}
+        TrafficLight(unique_ptr<State> state) : currentState(std::move(state)){}
         
         void setState(unique_ptr<State> newState) {
-            currentState = move(newState);
+            currentState = std::move(newState);
         }
 
         void change() {
@@ -42,10 +42,7 @@ class TrafficLight {
 class RedState : public State {
 public: 
     // Remember that states are also responsible for changing themseleves. 
-    void change(TrafficLight& light) override{
-        cout << "Changing light from red to green" << endl;
-        light.setState(make_unique<GreenState>());
-    }
+    void change(TrafficLight& light) override;
     void showState() const override {
         cout << "Traffic light is red. STOP!" << endl; 
     }
@@ -53,10 +50,7 @@ public:
 
 class GreenState : public State {
 public: 
-    void change(TrafficLight& light) override{
-        cout << "Changing from green to yellow" << endl;
-        light.setState(std::make_unique<YellowState>());
-    }
+    void change(TrafficLight& light) override; 
     void showState() const override {
         cout << "Traffic Light is green. GO!" << endl;
     }
@@ -64,15 +58,27 @@ public:
 
 class YellowState : public State {
 public: 
-    void change(TrafficLight& light) override{
-        cout << "Changing light from yellow to red" << endl;
-    }
+    void change(TrafficLight& light) override;
+
     void showState() const override {
         cout << "Traffic Light is yellow. SLOW DOWN!" << endl;
 
     }
 };
 
+void RedState::change(TrafficLight& light) {
+        cout << "Changing from green to yellow" << endl;
+        light.setState(std::make_unique<YellowState>());
+}
+
+void GreenState::change(TrafficLight& light){
+    cout << "Changing from green to yellow" << endl;
+    light.setState(std::make_unique<YellowState>());
+}
+
+void YellowState::change(TrafficLight& light){
+    cout << "Changing light from yellow to red" << endl;
+}
 
 
 int main() {
