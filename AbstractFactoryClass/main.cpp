@@ -82,7 +82,10 @@ int main() {
     VehicleFactory* factory = new HondaFactory(); 
 
     // We now use the honda factory to create a car and a motorcycle. 
+    // createCar() returns a pointer to a Honda car object. 
     Car* car = factory->createCar(); 
+
+    // returns a pointer to a Honda motorcycle object. 
     MotorCycle* MotorCycle = factory->createMotorCycle(); 
 
     car->drive(); 
