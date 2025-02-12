@@ -1,6 +1,6 @@
 #include <iostream> 
 #include <string> 
-#include <memory>
+
 
 using namespace std; 
 
@@ -12,6 +12,7 @@ class Message {
 };
 
 // Concrete Component
+// This is the object that will be wrapped. 
 class PlainMessage: public Message {
     private: 
         string content; 
@@ -26,16 +27,19 @@ class PlainMessage: public Message {
 // Base Decorator
 class MessageDecorator : public Message {
 protected:
-    std::shared_ptr<Message> message; // Wraps a Message object
+    Message* message; // Wraps a Message object
 
 public:
-    MessageDecorator(std::shared_ptr<Message> msg) : message(std::move(msg)) {}
+    MessageDecorator(Message* msg) : message(msg) {}
+    ~MessageDecorator() {
+        delete message;
+    }
 };
 
 // Concrete Decorator 1: Adds stars around the message
 class StarDecorator : public MessageDecorator {
 public:
-    StarDecorator(std::shared_ptr<Message> msg) : MessageDecorator(std::move(msg)) {}
+    StarDecorator(Message* msg) : MessageDecorator(msg) {}
     std::string getContent() const override {
         return "*** " + message->getContent() + " ***";
     }
@@ -44,7 +48,7 @@ public:
 // Concrete Decorator 2: Adds a banner around the message
 class BannerDecorator : public MessageDecorator {
 public:
-    BannerDecorator(std::shared_ptr<Message> msg) : MessageDecorator(std::move(msg)) {}
+    BannerDecorator(Message* msg) : MessageDecorator(msg) {}
     std::string getContent() const override {
         return "==== " + message->getContent() + " ====";
     }
@@ -52,14 +56,14 @@ public:
 
 
 int main() {
-    // Base plain message
-    std::shared_ptr<Message> myMessage = std::make_shared<PlainMessage>("Hello, World!");
+
+    Message* myMessage = new PlainMessage("Hello World");
 
     // Decorate with stars
-    std::shared_ptr<Message> starMessage = std::make_shared<StarDecorator>(myMessage);
+    Message* starMessage = new StarDecorator(myMessage);
 
     // Decorate with a banner on top of the stars
-    std::shared_ptr<Message> bannerMessage = std::make_shared<BannerDecorator>(starMessage);
+    Message* bannerMessage = new BannerDecorator(starMessage);
 
     // Print the final decorated message
     std::cout << bannerMessage->getContent() << std::endl;
