@@ -16,7 +16,7 @@ public:
         cout << "Paid $" << amount << "using Credit Card" << endl;
     }
 };
-
+// Concrete Strategy 2: Pay Pal Payment
 class PayPalPayment : public PaymentStrategy {
 public: 
     void pay(int amount) override {
